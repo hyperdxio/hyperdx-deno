@@ -1,11 +1,14 @@
 // Derived from https://github.com/denoland/deno_std/blob/main/log/handlers.ts
-import * as log from 'https://deno.land/std@0.203.0/log/mod.ts';
 
-import type { LogRecord } from 'https://deno.land/std@0.203.0/log/logger.ts';
+import {
+  BaseHandler,
+  type BaseHandlerOptions,
+} from 'https://deno.land/std@0.213.0/log/base_handler.ts';
+import { LogRecord } from 'https://deno.land/std@0.213.0/log/logger.ts';
 import {
   LevelName,
   LogLevels,
-} from 'https://deno.land/std@0.203.0/log/levels.ts';
+} from 'https://deno.land/std@0.213.0/log/levels.ts';
 
 import { SeverityNumber, logs } from 'npm:@opentelemetry/api-logs@0.43.0';
 import { OTLPLogExporter } from 'npm:@opentelemetry/exporter-logs-otlp-http@0.43.0';
@@ -59,7 +62,7 @@ const OTEL_SEVERITY_NAME_MAP = {
   24: 'FATAL4',
 };
 
-interface HandlerOptions extends log.HandlerOptions {
+interface HandlerOptions extends BaseHandlerOptions {
   exporterProtocol?: 'http' | 'console';
   httpExporterOptions?: OTLPExporterNodeConfigBase;
   processorConfig?: BufferConfig;
@@ -67,7 +70,7 @@ interface HandlerOptions extends log.HandlerOptions {
   detectResources?: boolean;
 }
 
-export class OpenTelemetryHandler extends log.handlers.BaseHandler {
+export class OpenTelemetryHandler extends BaseHandler {
   protected _logger: Logger | undefined;
   protected _processor: BatchLogRecordProcessor | undefined;
 
@@ -98,13 +101,13 @@ export class OpenTelemetryHandler extends log.handlers.BaseHandler {
 
     const processor = new BatchLogRecordProcessor(
       exporter,
-      options.processorConfig,
+      options.processorConfig
     );
     this._processor = processor;
 
     const loggerProvider = new LoggerProvider({
       resource: detectedResource.merge(
-        new Resource({ ...options.resourceAttributes }),
+        new Resource({ ...options.resourceAttributes })
       ),
     });
 
@@ -154,7 +157,9 @@ export class OpenTelemetryHandler extends log.handlers.BaseHandler {
   }
 
   log(_msg: string) {}
-  flush() {}
+  flush() {
+    this._processor?.forceFlush();
+  }
 
   override destroy() {
     this.flush();

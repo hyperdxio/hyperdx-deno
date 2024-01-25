@@ -8,14 +8,15 @@ deno run --allow-net --allow-env --allow-read --allow-sys --allow-run full-otel-
 
 // Logging
 
-import * as log from 'https://deno.land/std@0.203.0/log/mod.ts';
+import * as log from 'https://deno.land/std@0.213.0/log/mod.ts';
 import { OpenTelemetryHandler } from './mod.ts';
+const otelHandler = new OpenTelemetryHandler('DEBUG', {
+  // exporterProtocol: 'console',
+});
 log.setup({
   handlers: {
     // console: new log.handlers.ConsoleHandler("DEBUG"),
-    otel: new OpenTelemetryHandler('DEBUG', {
-      // exporterProtocol: 'console',
-    }),
+    otel: otelHandler,
   },
   loggers: {
     'my-otel-logger': {
@@ -102,6 +103,8 @@ const handler = async (request: Request): Promise<Response> => {
     foo: 'bar',
     baz: 'qux',
   });
+
+  otelHandler.flush();
 
   return new Response(body, { status: 200 });
 };
