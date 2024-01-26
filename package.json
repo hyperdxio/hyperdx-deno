@@ -16,5 +16,8 @@
   "scripts": {
     "build": "deno run -A build-npm.ts",
     "ci:lint": "deno lint mod.ts"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1"
   }
 }
