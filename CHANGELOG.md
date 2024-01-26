@@ -1,5 +1,11 @@
 # @hyperdx/deno
 
+## 0.0.4
+
+### Patch Changes
+
+- fix: release script
+
 ## 0.0.3
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "@hyperdx/deno",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://www.hyperdx.io",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "deno run -A build-npm.ts",
-    "release": "yarn build && yarn changeset publish && git push --follow-tags",
+    "release": "yarn build && cd ./build && npm adduser && npm publish && cd .. && yarn changeset tag && git push --follow-tags",
     "ci:lint": "deno lint mod.ts"
   },
   "devDependencies": {
