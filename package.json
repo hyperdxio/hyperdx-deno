@@ -15,6 +15,10 @@
   ],
   "scripts": {
     "build": "deno run -A build-npm.ts",
+    "release": "yarn build && yarn changeset publish && git push --follow-tags",
     "ci:lint": "deno lint mod.ts"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1"
   }
 }
