@@ -9,12 +9,14 @@ Logging is supported by exporting a custom logger for the `std/log` module.
 **Example usage:**
 
 ```typescript
-import * as log from 'https://deno.land/std@0.203.0/log/mod.ts';
+import * as log from 'https://deno.land/std@0.213.0/log/mod.ts';
 import { OpenTelemetryHandler } from 'npm:@hyperdx/deno';
+
+const otelHandler = new OpenTelemetryHandler('DEBUG');
 
 log.setup({
   handlers: {
-    otel: new OpenTelemetryHandler('DEBUG'),
+    otel: otelHandler,
   },
 
   loggers: {
@@ -26,4 +28,9 @@ log.setup({
 });
 
 log.getLogger('my-otel-logger').info('Hello from Deno!');
+
+
+// OPTIONAL: Flush the logger to ensure all logs are sent to OTEL_EXPORTER_OTLP_ENDPOINT
+otelHandler.flush();
 ```
+
